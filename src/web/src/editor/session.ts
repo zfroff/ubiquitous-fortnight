@@ -2,7 +2,8 @@ import {
   Block,
   positionBetween,
   VersionConflictDetails,
-  type GetPageResponse,
+  type Row,
+  type BlockOp,
   type Page,
   type BlockType,
   type RichText,
@@ -12,8 +13,12 @@ import { workspaceApi } from '../api/workspace';
 import { ApiError } from '../api/client';
 import { convertBlock, descendants, diffBlocks, orderedChildren, withRich } from './adapter';
 
+export interface DocumentData {
+  page: Page | Row;
+  blocks: Block[];
+}
 export interface DraftState {
-  page: Page;
+  page: Page | Row;
   title: string;
   blocks: Block[];
   dirty: boolean;
@@ -21,7 +26,18 @@ export interface DraftState {
   error: string | null;
   lastChangeset: string | null;
 }
-type SaveApi = Pick<typeof workspaceApi, 'ops' | 'update'>;
+export interface SaveApi {
+  ops: (
+    id: string,
+    ops: BlockOp[],
+  ) => Promise<{
+    page: Page | Row;
+    blocks: Block[];
+    deletedBlockIds: string[];
+    changesetId: string;
+  }>;
+  update: (id: string, body: { version: number; title?: string }) => Promise<Page | Row>;
+}
 export class PageSession {
   private base: Block[];
   private baseTitle: string;
@@ -32,7 +48,7 @@ export class PageSession {
   private flight: Promise<void> | null = null;
   private transport: SaveApi;
   private state: DraftState;
-  constructor(data: GetPageResponse, transport: SaveApi = workspaceApi) {
+  constructor(data: DocumentData, transport: SaveApi = workspaceApi) {
     this.base = data.blocks;
     this.baseTitle = data.page.title;
     this.transport = transport;
@@ -57,7 +73,7 @@ export class PageSession {
     this.state = { ...this.state, ...patch, dirty: this.revision > this.savedRevision };
     this.listeners.forEach((listener) => listener());
   }
-  hydrate(data: GetPageResponse) {
+  hydrate(data: DocumentData) {
     if (this.state.dirty || this.state.saving) return;
     this.base = data.blocks;
     this.baseTitle = data.page.title;
@@ -227,7 +243,7 @@ export class PageSession {
     } catch (error) {
       if (error instanceof ApiError && error.status === 409) {
         const conflict = VersionConflictDetails.safeParse(error.details);
-        if (conflict.success && conflict.data.entity === 'page') page = conflict.data.current;
+        if (conflict.success) page = conflict.data.current;
       }
       const message =
         error instanceof ApiError && error.status === 401
@@ -245,10 +261,10 @@ export class PageSession {
   }
 }
 const sessions = new Map<string, PageSession>();
-export function pageSession(data: GetPageResponse) {
+export function pageSession(data: DocumentData, transport?: SaveApi) {
   let session = sessions.get(data.page.id);
   if (!session) {
-    session = new PageSession(data);
+    session = new PageSession(data, transport);
     sessions.set(data.page.id, session);
   }
   return session;

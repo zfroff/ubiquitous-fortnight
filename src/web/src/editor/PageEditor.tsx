@@ -17,13 +17,22 @@ import {
 import { Plus, Undo2, AlertCircle } from 'lucide-react';
 import { workspaceApi } from '../api/workspace';
 import { orderedChildren, orderedBlocks } from './adapter';
-import { pageSession, type PageSession } from './session';
+import { pageSession, type PageSession, type DocumentData, type SaveApi } from './session';
+import { DatabaseWorkspace } from '../database/DatabaseWorkspace';
 import { BlockRow } from './BlockRow';
 import { useWorkspace } from '../workspace/WorkspaceProvider';
-import type { Block, GetPageResponse, Page } from '@fortnight/shared';
+import type { Block, Page } from '@fortnight/shared';
 
-function EditorBody({ data }: { data: GetPageResponse }) {
-  const session = useMemo(() => pageSession(data), [data.page.id]);
+export function DocumentEditor({
+  data,
+  transport,
+  reload,
+}: {
+  data: DocumentData;
+  transport?: SaveApi;
+  reload?: () => Promise<DocumentData>;
+}) {
+  const session = useMemo(() => pageSession(data, transport), [data.page.id, transport]);
   const state = useSyncExternalStore(session.subscribe, session.getSnapshot);
   const workspace = useWorkspace();
   const client = useQueryClient();
@@ -39,6 +48,7 @@ function EditorBody({ data }: { data: GetPageResponse }) {
     if (!session.getSnapshot().blocks.length) setFocus(session.add());
   }, [session]);
   useEffect(() => {
+    if (!('kind' in state.page)) return;
     client.setQueryData<{ pages: Page[] }>(['pages'], (old) =>
       old
         ? {
@@ -55,7 +65,7 @@ function EditorBody({ data }: { data: GetPageResponse }) {
       const id = session.getSnapshot().lastChangeset;
       if (!id) return;
       await workspaceApi.undo(id);
-      const next = await workspaceApi.page(state.page.id);
+      const next = await (reload ? reload() : workspaceApi.page(state.page.id));
       session.hydrate(next);
       workspace.refresh();
       workspace.notify('Edit undone');
@@ -217,5 +227,9 @@ export function WorkspacePage() {
         </button>
       </div>
     );
-  return <EditorBody key={selected} data={page.data} />;
+  if (page.data.page.kind === 'database' && page.data.page.databaseId)
+    return (
+      <DatabaseWorkspace key={page.data.page.databaseId} databaseId={page.data.page.databaseId} />
+    );
+  return <DocumentEditor key={selected} data={page.data} />;
 }

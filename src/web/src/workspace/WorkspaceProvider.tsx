@@ -12,6 +12,9 @@ import { useShell } from '../store';
 type Notice = { text: string; undo?: () => Promise<void> };
 interface WorkspaceState {
   selected: string | null;
+  selectedRow: string | null;
+  openRow: (id: string) => Promise<void>;
+  closeRow: () => Promise<void>;
   pages: Page[];
   loading: boolean;
   error: unknown;
@@ -37,6 +40,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const client = useQueryClient();
   const [selected, setSelected] = useState<string | null>(selectedFromUrl);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<string | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const pages = useQuery({
     queryKey: ['pages'],
@@ -52,7 +56,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const navigate = useCallback(
     async (id: string | null) => {
       try {
-        await activeSession(selected)?.flush();
+        await flushSessions();
+        setSelectedRow(null);
         refresh();
         setSelected(id);
         window.history.pushState(null, '', id ? '#page/' + encodeURIComponent(id) : '#workspace');
@@ -165,10 +170,30 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       notify(error instanceof Error ? error.message : 'Could not archive this page. Try again.');
     }
   }
+  async function openRow(id: string) {
+    try {
+      await flushSessions();
+      setSelectedRow(id);
+    } catch (e) {
+      notify(e instanceof Error ? e.message : 'Save your edits before opening this item.');
+    }
+  }
+  async function closeRow() {
+    try {
+      await activeSession(selectedRow)?.flush();
+      setSelectedRow(null);
+      void client.invalidateQueries({ queryKey: ['rows'] });
+    } catch (e) {
+      notify(e instanceof Error ? e.message : 'Could not save. Your edits are kept.');
+    }
+  }
   return (
     <Context.Provider
       value={{
         selected,
+        selectedRow,
+        openRow,
+        closeRow,
         pages: pages.data?.pages.filter((p) => !p.archivedAt) ?? [],
         loading: pages.isPending,
         error: pages.error,

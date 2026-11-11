@@ -1,3 +1,5 @@
+import { databaseApi } from '../api/databases';
+import { Database as DatabaseIcon } from 'lucide-react';
 import { useState } from 'react';
 import {
   DndContext,
@@ -216,6 +218,23 @@ export function WorkspaceSidebar() {
       </button>
       <div className="section-heading">
         <span className="eyebrow">YOUR PAGES</span>
+        <button
+          className="icon-button"
+          aria-label="Create database"
+          onClick={() =>
+            void databaseApi
+              .create({ title: 'Untitled database' })
+              .then(async (result) => {
+                state.refresh();
+                await state.navigate(result.page.id);
+              })
+              .catch((e: unknown) =>
+                state.notify(e instanceof Error ? e.message : 'Could not create database.'),
+              )
+          }
+        >
+          <DatabaseIcon size={14} />
+        </button>
         <button
           className="icon-button"
           aria-label="Create page"

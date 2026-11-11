@@ -21,6 +21,7 @@ import { WorkspaceProvider, useWorkspace } from './workspace/WorkspaceProvider';
 import { WorkspaceSidebar } from './workspace/WorkspaceSidebar';
 import { SearchPalette } from './workspace/SearchPalette';
 import { WorkspacePage } from './editor/PageEditor';
+import { RowDialog } from './database/RowDialog';
 import { clearSessions, flushSessions } from './editor/session';
 
 function Mark() {
@@ -331,6 +332,7 @@ function Shell({ user }: { user: MockUser }) {
         </div>
       </div>
       <SearchPalette />
+      <RowDialog />
     </div>
   );
 }

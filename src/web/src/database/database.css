@@ -1,0 +1,668 @@
+.database-workspace {
+  width: 100%;
+  min-width: 0;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.database-heading {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  color: var(--color-accent);
+  margin-bottom: var(--space-6);
+}
+.database-title {
+  font-size: var(--text-display);
+  font-weight: 600;
+  letter-spacing: -1px;
+  border: 0;
+  padding: var(--space-2) 0;
+  background: transparent;
+}
+.database-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-line);
+}
+.view-tabs {
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+.view-tabs button,
+.db-button {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+}
+.view-tabs button {
+  border-color: transparent;
+}
+.view-tabs button[aria-selected='true'],
+.view-tabs button:hover,
+.db-button:hover {
+  background: var(--color-tint);
+  color: var(--color-accent);
+}
+.database-options {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  flex-wrap: wrap;
+  margin: var(--space-4) 0;
+}
+.database-options > select,
+.database-options > label > select {
+  font: inherit;
+  font-size: var(--text-sm);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+}
+.database-options > label {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.db-empty {
+  text-align: center;
+  padding: var(--space-12) var(--space-6);
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+.db-empty h2 {
+  color: var(--color-text);
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-3);
+}
+.db-empty button {
+  margin-top: var(--space-4);
+}
+.database-table-scroll {
+  max-width: 100%;
+  overflow: auto;
+  min-height: 320px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+}
+.database-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+  font-size: var(--text-sm);
+  background: var(--color-surface);
+}
+.database-table th {
+  position: relative;
+  height: 42px;
+  background: var(--color-sidebar);
+  color: var(--color-muted);
+  font-weight: 500;
+  text-align: left;
+  border-right: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+  padding: 0 var(--space-2);
+}
+.database-table td {
+  border-right: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+  height: 40px;
+  padding: var(--space-1) var(--space-2);
+  vertical-align: top;
+}
+.database-table tr:hover td {
+  background: var(--color-canvas);
+}
+.table-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.open-row {
+  border: 0;
+  background: transparent;
+  color: var(--color-muted);
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+}
+.open-row:hover {
+  background: var(--color-tint);
+  color: var(--color-accent);
+}
+.cell-input {
+  min-width: 0;
+  flex: 1;
+}
+.cell-input input {
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  padding: var(--space-2) var(--space-1);
+  width: 100%;
+  font-size: var(--text-sm);
+}
+.cell-input input:focus {
+  background: var(--color-surface);
+}
+.cell-error {
+  display: block;
+  color: var(--color-error);
+  font-size: var(--text-xs);
+  max-width: 240px;
+  white-space: normal;
+}
+.cell-error button {
+  border: 0;
+  background: none;
+  color: inherit;
+  text-decoration: underline;
+}
+.select-cell {
+  min-width: 0;
+  flex: 1;
+}
+.select-cell select {
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  padding: var(--space-2) var(--space-1);
+  font: inherit;
+  font-size: var(--text-sm);
+  max-width: 100%;
+  min-width: 80px;
+}
+.select-cell select[multiple] {
+  height: 64px;
+}
+.row-actions-column {
+  width: 40px;
+  min-width: 40px;
+}
+.property-drag {
+  cursor: grab;
+  padding: var(--space-1);
+  touch-action: none;
+  color: var(--color-subtle);
+}
+.property-details {
+  display: inline-block;
+  position: relative;
+  width: calc(100% - 28px);
+}
+.property-details > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  cursor: pointer;
+  padding: var(--space-2) 0;
+}
+.property-details > summary span {
+  padding: 0 var(--space-2);
+  opacity: 0.5;
+}
+.property-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 15;
+  width: 260px;
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  text-align: left;
+}
+.property-menu label {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+.property-menu input,
+.property-menu select {
+  margin-top: var(--space-1);
+  width: 100%;
+  font: inherit;
+  font-size: var(--text-sm);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  padding: var(--space-2);
+  color: var(--color-text);
+}
+.property-create {
+  position: relative;
+}
+.option-editor > div {
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+}
+.option-editor button,
+.form-actions > button:not(.primary) {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-muted);
+  padding: var(--space-2);
+  font-size: var(--text-xs);
+}
+.option-editor {
+  margin-bottom: var(--space-3);
+}
+.option-editor > button {
+  margin-top: var(--space-2);
+}
+.form-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: var(--space-3);
+}
+.danger-button {
+  border: 0;
+  background: transparent;
+  color: var(--color-error);
+  padding: var(--space-2);
+  font-size: var(--text-sm);
+}
+.column-resize {
+  position: absolute;
+  right: -3px;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+  cursor: col-resize;
+  touch-action: none;
+  z-index: 2;
+}
+.column-resize:hover {
+  background: var(--color-accent);
+}
+.view-settings {
+  position: relative;
+  font-size: var(--text-sm);
+}
+.view-settings > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  color: var(--color-muted);
+}
+.view-settings-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  width: min(580px, 80vw);
+  max-height: 70vh;
+  overflow: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5);
+}
+.view-settings-panel h3 {
+  font-size: var(--text-sm);
+  font-weight: 550;
+  margin: var(--space-4) 0 var(--space-2);
+}
+.filter-group {
+  border-left: 2px solid var(--color-line);
+  padding-left: var(--space-3);
+}
+.filter-group-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+.filter-condition,
+.sort-row {
+  display: flex;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-2);
+}
+.filter-condition select,
+.filter-condition input,
+.sort-row select,
+.filter-group > select {
+  font: inherit;
+  font-size: var(--text-xs);
+  color: var(--color-text);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  min-width: 90px;
+  max-width: 180px;
+  width: auto;
+}
+.filter-group > button,
+.filter-group-item > button,
+.sort-row > button {
+  border: 0;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+  padding: var(--space-2);
+}
+.property-visibility {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+.property-visibility label {
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+  font-size: var(--text-xs);
+}
+.property-visibility input {
+  width: auto;
+  accent-color: var(--color-accent);
+}
+.board-view {
+  display: flex;
+  gap: var(--space-4);
+  overflow: auto;
+  align-items: flex-start;
+  min-height: 320px;
+  padding-bottom: var(--space-5);
+}
+.board-column {
+  background: var(--color-sidebar);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  width: 260px;
+  min-width: 250px;
+  min-height: 180px;
+}
+.board-column h3 {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: center;
+  font-size: var(--text-sm);
+  font-weight: 550;
+  margin: var(--space-2) 0 var(--space-4);
+}
+.board-column h3 span {
+  color: var(--color-subtle);
+  font-size: var(--text-xs);
+  font-weight: 400;
+}
+.database-card {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  min-width: 0;
+}
+.database-card[draggable='true'] {
+  cursor: grab;
+}
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: space-between;
+  width: 100%;
+  border: 0;
+  background: none;
+  text-align: left;
+  padding: 0;
+  font-size: var(--text-base);
+  font-weight: 550;
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+}
+.card-title:hover {
+  color: var(--color-accent);
+}
+.card-property {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  min-width: 0;
+}
+.card-property > span {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+.gallery-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: var(--space-4);
+}
+.gallery-view .database-card {
+  margin: 0;
+}
+.gallery-cover {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 2;
+  background: var(--color-tint);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-4);
+  color: var(--color-accent);
+  overflow: hidden;
+}
+.gallery-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.list-view .database-card {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) repeat(2, minmax(120px, 1fr));
+  align-items: start;
+  gap: var(--space-4);
+  margin: 0;
+  border-radius: 0;
+  border-width: 0 0 1px;
+}
+.list-view .card-title {
+  margin: var(--space-2) 0;
+}
+.list-view .card-property {
+  margin: 0;
+}
+.date-cell {
+  position: relative;
+  font-size: var(--text-sm);
+  min-width: 100px;
+}
+.date-cell > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: var(--space-2) var(--space-1);
+  white-space: nowrap;
+}
+.date-cell > .date-form {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 15;
+  min-width: 280px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+.date-form label {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+.date-form input {
+  margin-top: var(--space-1);
+}
+.date-form input[type='checkbox'] {
+  width: auto;
+  margin-right: var(--space-2);
+  accent-color: var(--color-accent);
+}
+.date-form small {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+.event-dialog {
+  width: 380px;
+  max-width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  max-height: 76vh;
+  overflow: auto;
+}
+.event-dialog h2 {
+  font-size: var(--text-xl);
+  margin-bottom: var(--space-5);
+}
+.event-dialog > label {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  margin-bottom: var(--space-4);
+}
+.event-dialog input {
+  margin-top: var(--space-2);
+}
+.calendar-note {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+  margin: var(--space-4) 0;
+}
+.calendar-view {
+  --fc-palette-primary: var(--color-accent);
+  font-family: var(--font-ui);
+  min-width: 0;
+}
+.calendar-view .fc {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+}
+.calendar-view .fc-toolbar-title {
+  font-size: var(--text-xl);
+}
+.row-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--color-backdrop);
+  z-index: 55;
+  padding: var(--space-10) var(--space-6);
+  overflow: auto;
+}
+.row-dialog {
+  width: min(860px, 100%);
+  margin: 0 auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6) var(--space-10);
+  min-height: 80vh;
+}
+.row-dialog > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  margin-bottom: var(--space-5);
+}
+.row-properties {
+  margin-bottom: var(--space-8);
+}
+.row-properties > div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-2) 0;
+}
+.row-properties > div > span {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+.row-properties .date-cell > .date-form {
+  z-index: 60;
+}
+.row-dialog .document-page {
+  max-width: none;
+}
+@media (max-width: 1000px) {
+  .database-toolbar {
+    align-items: flex-start;
+  }
+  .database-options {
+    gap: var(--space-2);
+  }
+  .view-tabs {
+    gap: 0;
+  }
+  .view-tabs button {
+    padding: var(--space-2);
+  }
+  .list-view .database-card {
+    grid-template-columns: 1fr 1fr;
+  }
+  .calendar-view {
+    overflow: auto;
+  }
+  .row-dialog {
+    padding: var(--space-5) var(--space-6);
+  }
+}
+@media (max-width: 700px) {
+  .database-toolbar {
+    flex-direction: column;
+  }
+  .database-options {
+    align-items: flex-start;
+  }
+  .view-settings-panel {
+    left: -100px;
+  }
+  .row-backdrop {
+    padding: var(--space-3);
+  }
+  .row-properties > div {
+    grid-template-columns: 100px 1fr;
+    gap: var(--space-2);
+  }
+}

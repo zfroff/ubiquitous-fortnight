@@ -4,15 +4,19 @@ import { Search, X, FileText } from 'lucide-react';
 import { workspaceApi } from '../api/workspace';
 import { useWorkspace } from './WorkspaceProvider';
 export function SearchPalette() {
-  const { searchOpen, closeSearch, navigate } = useWorkspace();
-  return searchOpen ? <SearchDialog close={closeSearch} navigate={navigate} /> : null;
+  const { searchOpen, closeSearch, navigate, openRow } = useWorkspace();
+  return searchOpen ? (
+    <SearchDialog close={closeSearch} navigate={navigate} openRow={openRow} />
+  ) : null;
 }
 function SearchDialog({
   close,
   navigate,
+  openRow,
 }: {
   close: () => void;
   navigate: (id: string) => Promise<void>;
+  openRow: (id: string) => Promise<void>;
 }) {
   const [query, setQuery] = useState(''),
     [debounced, setDebounced] = useState(''),
@@ -34,9 +38,10 @@ function SearchDialog({
     queryFn: ({ signal }) => workspaceApi.search(debounced, signal),
     enabled: !!debounced,
   });
-  const results = search.data?.results.filter((result) => result.kind === 'page') ?? [];
-  async function open(id: string) {
-    await navigate(id);
+  const results = search.data?.results ?? [];
+  async function open(id: string, kind: 'page' | 'row' = 'page') {
+    if (kind === 'row') await openRow(id);
+    else await navigate(id);
     close();
   }
   return (
@@ -63,7 +68,7 @@ function SearchDialog({
           }
           if (event.key === 'Enter' && results[index]) {
             event.preventDefault();
-            void open(results[index]!.pageId);
+            void open(results[index]!.pageId, results[index]!.kind);
           }
           if (event.key === 'Escape') close();
           if (event.key === 'Tab') {
@@ -115,7 +120,7 @@ function SearchDialog({
                 role="option"
                 aria-selected={i === index}
                 className={i === index ? 'highlighted' : ''}
-                onClick={() => void open(result.pageId)}
+                onClick={() => void open(result.pageId, result.kind)}
               >
                 <FileText size={17} />
                 <span>
